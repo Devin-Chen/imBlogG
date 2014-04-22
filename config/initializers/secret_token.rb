@@ -9,4 +9,17 @@
 
 # Make sure your secret_key_base is kept private
 # if you're sharing your code publicly.
-ImBlogG::Application.config.secret_key_base = '428b9adbe8cd71cd5462a73f1770446188b211d9ab94f0e4ea999bc28882088c7e0f20fd53a90e39ab3de777e9a8002bb92fe90a65249f7a303c064009b7ce7f'
+require 'securerandom'
+
+def secure_token
+	token_file = Rails.root.join('.secret')
+	if File.exist?(token_file)
+		File.read(token_file).chomp
+	else
+		token=SecureRandom.hex(64)
+		File.write(token_file,token)
+		token
+	end
+end
+
+ImBlogG::Application.config.secret_key_base = secure_token
